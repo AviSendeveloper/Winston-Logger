@@ -1,0 +1,29 @@
+{
+  "name": "winstone-logger",
+  "version": "1.0.0",
+  "description": "Log error and request in file and also console using Winstone package",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "]"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AviSendeveloper/Winstone-Logger.git"
+  },
+  "keywords": [
+    "Node",
+    "Winston",
+    "Log"
+  ],
+  "author": "Avijit Sen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AviSendeveloper/Winstone-Logger/issues"
+  },
+  "homepage": "https://github.com/AviSendeveloper/Winstone-Logger#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.22"
+  }
+}
