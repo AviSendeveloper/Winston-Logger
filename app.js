@@ -1,7 +1,8 @@
 const express = require("express");
 const expressWinston = require("express-winston");
-// const { transports } = require("express-winston");
 const { transports, format } = require("winston");
+require('winston-mongodb');
+require("dotenv").config();
 
 const app = express();
 
@@ -15,12 +16,16 @@ app.use(
                 filename: "log/all.log",
             }),
             new transports.File({
-                level: 'warn',
+                level: "warn",
                 filename: "log/warning.log",
             }),
             new transports.File({
-                level: 'error',
+                level: "error",
                 filename: "log/error.log",
+            }),
+            new transports.MongoDB({
+                db: process.env.DATABASE_URL,
+                collection: "logs",
             }),
         ],
         format: format.combine(
@@ -28,7 +33,7 @@ app.use(
             format.timestamp(),
             format.prettyPrint()
         ),
-        statusLevels: true
+        statusLevels: true,
     })
 );
 
