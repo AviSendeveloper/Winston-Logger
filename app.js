@@ -1,38 +1,16 @@
 const express = require("express");
 const expressWinston = require("express-winston");
 const { transports, format } = require("winston");
-require('winston-mongodb');
 require("dotenv").config();
+const logger = require("./logger");
 
 const app = express();
+app.use(express.urlencoded({ extended: false }));
 
-// winston
+// winston for request
 app.use(
     expressWinston.logger({
-        transports: [
-            new transports.Console(),
-            new transports.File({
-                // all/info
-                filename: "log/all.log",
-            }),
-            new transports.File({
-                level: "warn",
-                filename: "log/warning.log",
-            }),
-            new transports.File({
-                level: "error",
-                filename: "log/error.log",
-            }),
-            new transports.MongoDB({
-                db: process.env.DATABASE_URL,
-                collection: "logs",
-            }),
-        ],
-        format: format.combine(
-            format.json(),
-            format.timestamp(),
-            format.prettyPrint()
-        ),
+        winstonInstance: logger,
         statusLevels: true,
     })
 );
@@ -42,7 +20,8 @@ app.get("/", (req, res, next) => {
     res.status(200).send();
 });
 
-app.get("/200", (req, res, next) => {
+app.post("/200", (req, res, next) => {
+    logger.info(res.body);
     res.status(200).send();
 });
 
@@ -55,7 +34,33 @@ app.get("/403", (req, res, next) => {
 });
 
 app.get("/500", (req, res, next) => {
+    logger.error("Custom error log in route");
     res.status(500).send();
 });
+
+app.get("/error", (req, res, next) => {
+    throw new Error("Custom error");
+});
+
+const logFormat = format.printf(({ label, level, timestamp, meta }) => {
+    return `${label} ${level} ${timestamp} ${meta.message}`;
+});
+
+app.use(
+    expressWinston.errorLogger({
+        transports: [
+            new transports.File({
+                level: "error",
+                filename: "log/internalerror.log",
+            }),
+        ],
+        format: format.combine(
+            format.label({ label: "[LOGGER]" }),
+            format.json(),
+            format.timestamp(),
+            logFormat
+        ),
+    })
+);
 
 app.listen(3000);
