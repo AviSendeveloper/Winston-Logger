@@ -7,7 +7,7 @@ const fileRotateTransport = new transports.DailyRotateFile({
     maxFiles: "14d",
 });
 
-const winstonLogger = createLogger({
+const winstonRouteLogger = createLogger({
     transports: [
         fileRotateTransport,
         new transports.Console(),
@@ -31,4 +31,24 @@ const winstonLogger = createLogger({
     ),
 });
 
-module.exports = winstonLogger;
+const logFormat = format.printf(({ label, level, timestamp, meta }) => {
+    return `${label} ${level} ${timestamp} ${meta.message}`;
+});
+
+const winstonInternalErrorLogger = createLogger({
+    transports: [
+        new transports.File({
+            level: "error",
+            filename: "log/internalerror.log",
+        }),
+    ],
+    format: format.combine(
+        format.label({ label: "[LOGGER]" }),
+        format.json(),
+        format.timestamp(),
+        logFormat
+    ),
+});
+
+module.exports.routeLoger = winstonRouteLogger;
+module.exports.internalErrorLoger = winstonInternalErrorLogger;

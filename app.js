@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: false }));
 // winston for request
 app.use(
     expressWinston.logger({
-        winstonInstance: logger,
+        winstonInstance: logger.routeLoger,
         statusLevels: true,
     })
 );
@@ -42,25 +42,12 @@ app.get("/error", (req, res, next) => {
     throw new Error("Custom error");
 });
 
-const logFormat = format.printf(({ label, level, timestamp, meta }) => {
-    return `${label} ${level} ${timestamp} ${meta.message}`;
-});
-
+// winston for intetnal error
 app.use(
     expressWinston.errorLogger({
-        transports: [
-            new transports.File({
-                level: "error",
-                filename: "log/internalerror.log",
-            }),
-        ],
-        format: format.combine(
-            format.label({ label: "[LOGGER]" }),
-            format.json(),
-            format.timestamp(),
-            logFormat
-        ),
+        winstonInstance: logger.internalErrorLoger
     })
+    
 );
 
 app.listen(3000);
