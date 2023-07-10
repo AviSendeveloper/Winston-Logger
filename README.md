@@ -3,6 +3,17 @@ Log error and request in console and as well as save on files
 
 ----------------------------
 
+## Project Directory Tree
+```bash
+├── app.js
+├── LICENSE
+├── logger.js
+├── package.json
+├── package-lock.json
+├── README.md
+└── test.rest
+```
+
 ### app.js
 
 ```js
