@@ -45,9 +45,8 @@ app.get("/error", (req, res, next) => {
 // winston for intetnal error
 app.use(
     expressWinston.errorLogger({
-        winstonInstance: logger.internalErrorLoger
+        winstonInstance: logger.internalErrorLoger,
     })
-    
 );
 
 app.listen(3000);
