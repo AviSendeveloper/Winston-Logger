@@ -5,7 +5,7 @@ Log error and request in console and as well as save on files
 
 ### app.js
 
-```
+```js
 const express = require("express");
 const expressWinston = require("express-winston");
 const { transports, format } = require("winston");
@@ -37,7 +37,7 @@ app.listen(3000);
 
 > Config for winston
 
-```
+```js
 const { createLogger, transports, format } = require("winston");
 require("winston-daily-rotate-file");
 
